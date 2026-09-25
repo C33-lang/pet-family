@@ -2,6 +2,11 @@
 App<IAppOption>({
   globalData: {},
   onLaunch() {
+    wx.cloud.init({
+      env: 'cloud1-d4g7kfhsue712285a',
+      traceUser: true,
+    })
+
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || []
     logs.unshift(Date.now())
