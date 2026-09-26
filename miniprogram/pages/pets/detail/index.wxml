@@ -1,0 +1,73 @@
+<view class="page">
+  <view wx:if="{{status === 'loading'}}">
+    <view class="profile-card skeleton-card">
+      <view class="skeleton avatar-skeleton"></view>
+      <view class="skeleton-info">
+        <view class="skeleton skeleton-title"></view>
+        <view class="skeleton skeleton-line"></view>
+        <view class="skeleton skeleton-line short"></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="loadDetail">重新加载</button>
+  </view>
+
+  <block wx:else>
+    <view class="profile-card">
+      <image wx:if="{{pet.avatar}}" class="pet-avatar" src="{{pet.avatar}}" mode="aspectFill"></image>
+      <view wx:else class="pet-avatar avatar-placeholder">🐾</view>
+      <view class="profile-info">
+        <view class="name-row">
+          <text class="pet-name">{{pet.name}}</text>
+          <text class="level-badge">Lv.1</text>
+        </view>
+        <view class="pet-breed">{{pet.breed || '品种未填写'}}</view>
+        <view class="meta-row">
+          <text>{{pet.ageText}}</text>
+          <text class="dot">·</text>
+          <text>{{pet.genderText}}</text>
+          <text class="dot">·</text>
+          <text>{{pet.sterilized ? '已绝育' : '未绝育'}}</text>
+        </view>
+      </view>
+      <button class="edit-button" bindtap="handleEdit">编辑</button>
+    </view>
+
+    <view class="tabs">
+      <view
+        class="tab {{activeTab === 'records' ? 'active' : ''}}"
+        data-tab="records"
+        bindtap="handleTabChange"
+      >记录</view>
+      <view
+        class="tab {{activeTab === 'expenses' ? 'active' : ''}}"
+        data-tab="expenses"
+        bindtap="handleTabChange"
+      >花费</view>
+      <view
+        class="tab {{activeTab === 'reminders' ? 'active' : ''}}"
+        data-tab="reminders"
+        bindtap="handleTabChange"
+      >提醒</view>
+    </view>
+
+    <view class="tab-panel">
+      <view class="panel-icon">{{activeTab === 'records' ? '📝' : activeTab === 'expenses' ? '🧾' : '⏰'}}</view>
+      <view class="panel-title">
+        {{activeTab === 'records' ? '还没有记录' : activeTab === 'expenses' ? '花费模块开发中' : '提醒模块开发中'}}
+      </view>
+      <view class="panel-hint" wx:if="{{activeTab === 'records'}}">以后每一次成长，都可以在这里留下足迹</view>
+    </view>
+
+    <button
+      class="delete-button"
+      loading="{{deleting}}"
+      disabled="{{deleting}}"
+      bindtap="handleDelete"
+    >删除宠物</button>
+  </block>
+</view>

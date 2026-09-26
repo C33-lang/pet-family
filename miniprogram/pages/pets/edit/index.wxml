@@ -1,0 +1,118 @@
+<view class="page">
+  <view wx:if="{{status === 'loading'}}" class="form-card">
+    <view class="avatar-row">
+      <view class="skeleton avatar-skeleton"></view>
+      <view class="skeleton skeleton-line"></view>
+    </view>
+    <view wx:for="{{[1, 2, 3, 4, 5, 6]}}" wx:key="*this" class="skeleton form-skeleton"></view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="loadPet">重新加载</button>
+  </view>
+
+  <block wx:else>
+    <view class="form-card">
+      <view class="avatar-section" bindtap="handleChooseAvatar">
+        <image
+          wx:if="{{avatarPreview}}"
+          class="avatar"
+          src="{{avatarPreview}}"
+          mode="aspectFill"
+        ></image>
+        <view wx:else class="avatar avatar-placeholder">📷</view>
+        <view class="avatar-tip">{{avatarPreview ? '更换头像' : '添加头像'}}</view>
+      </view>
+
+      <view class="field required">
+        <view class="field-label">名字</view>
+        <input
+          class="field-input"
+          maxlength="20"
+          value="{{form.name}}"
+          placeholder="请输入宠物名字"
+          bindinput="handleNameInput"
+        />
+      </view>
+
+      <view class="field">
+        <view class="field-label">品种</view>
+        <input
+          class="field-input"
+          maxlength="30"
+          value="{{form.breed}}"
+          placeholder="例如：英短、柯基"
+          bindinput="handleBreedInput"
+        />
+      </view>
+
+      <view class="field field-column">
+        <view class="field-label">性别</view>
+        <radio-group class="gender-group" bindchange="handleGenderChange">
+          <label class="gender-option {{form.gender === 'male' ? 'selected' : ''}}">
+            <radio value="male" checked="{{form.gender === 'male'}}" color="#FF8C42" />
+            <text>公</text>
+          </label>
+          <label class="gender-option {{form.gender === 'female' ? 'selected' : ''}}">
+            <radio value="female" checked="{{form.gender === 'female'}}" color="#FF8C42" />
+            <text>母</text>
+          </label>
+          <label class="gender-option {{form.gender === 'unknown' ? 'selected' : ''}}">
+            <radio value="unknown" checked="{{form.gender === 'unknown'}}" color="#FF8C42" />
+            <text>未知</text>
+          </label>
+        </radio-group>
+      </view>
+
+      <picker
+        mode="date"
+        value="{{form.birthday}}"
+        end="{{maxDate}}"
+        bindchange="handleBirthdayChange"
+      >
+        <view class="field">
+          <view class="field-label">生日</view>
+          <view class="picker-value {{form.birthday ? '' : 'placeholder'}}">
+            {{form.birthday || '请选择生日'}}
+          </view>
+          <view class="field-arrow">›</view>
+        </view>
+      </picker>
+
+      <picker
+        mode="date"
+        value="{{form.adoptDate}}"
+        end="{{maxDate}}"
+        bindchange="handleAdoptDateChange"
+      >
+        <view class="field">
+          <view class="field-label">到家日期</view>
+          <view class="picker-value {{form.adoptDate ? '' : 'placeholder'}}">
+            {{form.adoptDate || '请选择到家日期'}}
+          </view>
+          <view class="field-arrow">›</view>
+        </view>
+      </picker>
+
+      <view class="field">
+        <view class="field-label">是否绝育</view>
+        <switch
+          checked="{{form.sterilized}}"
+          color="#FF8C42"
+          bindchange="handleSterilizedChange"
+        />
+      </view>
+    </view>
+
+    <view class="save-bar">
+      <button
+        class="save-button"
+        disabled="{{!canSubmit || submitting}}"
+        loading="{{submitting}}"
+        bindtap="handleSubmit"
+      >{{isEdit ? '保存修改' : '添加宠物'}}</button>
+    </view>
+  </block>
+</view>

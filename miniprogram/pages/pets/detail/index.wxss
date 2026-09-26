@@ -1,0 +1,229 @@
+page {
+  background: #fffaf6;
+  color: #2f2a27;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 28rpx;
+  box-sizing: border-box;
+}
+
+.profile-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 190rpx;
+  padding: 30rpx 26rpx;
+  border-radius: 12rpx;
+  background: linear-gradient(135deg, #fff 0%, #fff3e9 100%);
+  box-shadow: 0 10rpx 34rpx rgba(109, 76, 54, 0.09);
+}
+
+.pet-avatar,
+.avatar-placeholder {
+  width: 132rpx;
+  height: 132rpx;
+  flex: none;
+  border-radius: 50%;
+  background: #ffe7d6;
+}
+
+.avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 58rpx;
+}
+
+.profile-info {
+  min-width: 0;
+  margin-left: 24rpx;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+}
+
+.pet-name {
+  max-width: 240rpx;
+  overflow: hidden;
+  font-size: 38rpx;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.level-badge {
+  margin-left: 14rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 999rpx;
+  background: #ff8c42;
+  color: #ffffff;
+  font-size: 20rpx;
+}
+
+.pet-breed {
+  margin-top: 12rpx;
+  color: #7c7069;
+  font-size: 26rpx;
+}
+
+.meta-row {
+  display: flex;
+  margin-top: 12rpx;
+  color: #6f625a;
+  font-size: 24rpx;
+}
+
+.dot {
+  margin: 0 10rpx;
+  color: #d1c5bd;
+}
+
+.edit-button {
+  position: absolute;
+  top: 24rpx;
+  right: 22rpx;
+  height: 52rpx;
+  padding: 0 20rpx;
+  border: 1rpx solid #ffb17f;
+  border-radius: 12rpx;
+  background: #ffffff;
+  color: #ff8c42;
+  font-size: 24rpx;
+  line-height: 50rpx;
+}
+
+.edit-button::after,
+.retry-button::after,
+.delete-button::after {
+  border: 0;
+}
+
+.tabs {
+  display: flex;
+  margin-top: 32rpx;
+  border-bottom: 1rpx solid #f0e4dc;
+  background: #ffffff;
+  border-radius: 12rpx 12rpx 0 0;
+}
+
+.tab {
+  position: relative;
+  flex: 1;
+  padding: 28rpx 0;
+  color: #8c817a;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.tab.active {
+  color: #ff8c42;
+  font-weight: 600;
+}
+
+.tab.active::after {
+  position: absolute;
+  right: 34%;
+  bottom: 0;
+  left: 34%;
+  height: 5rpx;
+  border-radius: 999rpx;
+  background: #ff8c42;
+  content: '';
+}
+
+.tab-panel {
+  display: flex;
+  min-height: 360rpx;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 0 0 12rpx 12rpx;
+  background: #ffffff;
+}
+
+.panel-icon {
+  font-size: 76rpx;
+}
+
+.panel-title {
+  margin-top: 22rpx;
+  color: #6f625a;
+  font-size: 28rpx;
+}
+
+.panel-hint {
+  margin-top: 12rpx;
+  color: #aaa09a;
+  font-size: 24rpx;
+}
+
+.delete-button {
+  margin-top: 52rpx;
+  border: 1rpx solid #e64340;
+  border-radius: 12rpx;
+  background: transparent;
+  color: #e64340;
+  font-size: 28rpx;
+}
+
+.state-box {
+  display: flex;
+  min-height: 75vh;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.state-icon {
+  font-size: 100rpx;
+}
+
+.state-text {
+  margin-top: 24rpx;
+  color: #756961;
+  font-size: 28rpx;
+}
+
+.retry-button {
+  width: 220rpx;
+  margin-top: 30rpx;
+  border-radius: 12rpx;
+  background: #ff8c42;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.skeleton {
+  border-radius: 8rpx;
+  background: #f2e9e3;
+}
+
+.avatar-skeleton {
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 50%;
+}
+
+.skeleton-info {
+  flex: 1;
+  margin-left: 24rpx;
+}
+
+.skeleton-title {
+  width: 45%;
+  height: 36rpx;
+}
+
+.skeleton-line {
+  width: 70%;
+  height: 24rpx;
+  margin-top: 20rpx;
+}
+
+.skeleton-line.short {
+  width: 52%;
+}

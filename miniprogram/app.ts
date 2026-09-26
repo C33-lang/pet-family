@@ -1,23 +1,19 @@
-// app.ts
 App<IAppOption>({
   globalData: {},
+
   onLaunch() {
+    if (!wx.cloud) {
+      wx.showModal({
+        title: '提示',
+        content: '当前微信版本过低，请升级微信后重试。',
+        showCancel: false,
+      })
+      return
+    }
+
     wx.cloud.init({
       env: 'cloud1-d4g7kfhsue712285a',
       traceUser: true,
-    })
-
-    // 展示本地存储能力
-    const logs = wx.getStorageSync('logs') || []
-    logs.unshift(Date.now())
-    wx.setStorageSync('logs', logs)
-
-    // 登录
-    wx.login({
-      success: res => {
-        console.log(res.code)
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-      },
     })
   },
 })

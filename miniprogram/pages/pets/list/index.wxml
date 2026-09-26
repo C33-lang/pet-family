@@ -1,0 +1,54 @@
+<view class="page">
+  <view wx:if="{{status === 'loading'}}" class="pet-list skeleton-list">
+    <view wx:for="{{[1, 2, 3]}}" wx:key="*this" class="pet-card skeleton-card">
+      <view class="skeleton avatar-skeleton"></view>
+      <view class="skeleton-content">
+        <view class="skeleton skeleton-title"></view>
+        <view class="skeleton skeleton-line"></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{status === 'unauthorized'}}" class="state-box">
+    <view class="state-illustration">🐾</view>
+    <view class="state-title">登录后管理家里的毛孩子</view>
+    <button class="state-action" bindtap="handleAuthorize">授权登录</button>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-illustration">☁️</view>
+    <view class="state-title">{{errorMessage}}</view>
+    <button class="state-action" bindtap="loadPets">重新加载</button>
+  </view>
+
+  <view wx:elif="{{status === 'empty'}}" class="state-box empty-box" bindtap="handleAdd">
+    <view class="pet-illustration">
+      <view class="pet-face">🐶</view>
+      <view class="pet-face pet-face-small">🐱</view>
+    </view>
+    <view class="state-title">还没有添加毛孩子，点这里开始</view>
+  </view>
+
+  <view wx:else class="pet-list">
+    <view
+      wx:for="{{pets}}"
+      wx:key="_id"
+      class="pet-card"
+      data-id="{{item._id}}"
+      bindtap="handlePetTap"
+    >
+      <image wx:if="{{item.avatar}}" class="pet-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+      <view wx:else class="pet-avatar avatar-placeholder">🐾</view>
+      <view class="pet-info">
+        <view class="pet-name">{{item.name}}</view>
+        <view class="pet-age">{{item.ageText}}</view>
+      </view>
+      <view class="level-badge">Lv.{{item.level}}</view>
+      <view class="card-arrow">›</view>
+    </view>
+  </view>
+
+  <view wx:if="{{status !== 'unauthorized'}}" class="bottom-bar">
+    <button class="primary-button" bindtap="handleAdd">+ 添加宠物</button>
+  </view>
+</view>
