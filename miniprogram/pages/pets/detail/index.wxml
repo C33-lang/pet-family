@@ -38,24 +38,14 @@
     </view>
 
     <view class="tabs">
-      <view
-        class="tab {{activeTab === 'records' ? 'active' : ''}}"
-        data-tab="records"
-        bindtap="handleTabChange"
-      >记录</view>
-      <view
-        class="tab {{activeTab === 'expenses' ? 'active' : ''}}"
-        data-tab="expenses"
-        bindtap="handleTabChange"
-      >花费</view>
-      <view
-        class="tab {{activeTab === 'reminders' ? 'active' : ''}}"
-        data-tab="reminders"
-        bindtap="handleTabChange"
-      >提醒</view>
+      <view class="tab {{activeTab === 'records' ? 'active' : ''}}" data-tab="records" bindtap="handleTabChange">记录</view>
+      <view class="tab {{activeTab === 'photos' ? 'active' : ''}}" data-tab="photos" bindtap="handleTabChange">相册</view>
+      <view class="tab {{activeTab === 'expenses' ? 'active' : ''}}" data-tab="expenses" bindtap="handleTabChange">花费</view>
+      <view class="tab {{activeTab === 'reminders' ? 'active' : ''}}" data-tab="reminders" bindtap="handleTabChange">提醒</view>
     </view>
 
     <record-list wx:if="{{activeTab === 'records'}}" pet-id="{{id}}"></record-list>
+    <photo-grid wx:elif="{{activeTab === 'photos'}}" pet-id="{{id}}"></photo-grid>
 
     <view wx:else class="tab-panel">
       <view class="panel-icon">{{activeTab === 'expenses' ? '🧾' : '⏰'}}</view>
@@ -64,11 +54,6 @@
       </view>
     </view>
 
-    <button
-      class="delete-button"
-      loading="{{deleting}}"
-      disabled="{{deleting}}"
-      bindtap="handleDelete"
-    >删除宠物</button>
+    <button class="delete-button" loading="{{deleting}}" disabled="{{deleting}}" bindtap="handleDelete">删除宠物</button>
   </block>
 </view>

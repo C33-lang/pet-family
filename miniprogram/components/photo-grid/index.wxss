@@ -1,0 +1,144 @@
+.photo-panel {
+  position: relative;
+  min-height: 480rpx;
+  border-radius: 0 0 12rpx 12rpx;
+  background: #ffffff;
+}
+
+.photo-scroll {
+  height: 720rpx;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8rpx;
+  padding: 18rpx;
+}
+
+.photo-cell,
+.skeleton-photo {
+  position: relative;
+  overflow: hidden;
+  height: 210rpx;
+  border-radius: 12rpx;
+  background: #f2e9e3;
+}
+
+.photo-image {
+  width: 100%;
+  height: 100%;
+}
+
+.photo-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx;
+  background: rgba(47, 42, 39, 0.62);
+  color: #ffffff;
+  font-size: 23rpx;
+  line-height: 1.5;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.failed-cell {
+  border: 2rpx solid #e64340;
+  box-sizing: border-box;
+}
+
+.upload-progress {
+  padding: 18rpx 24rpx;
+  background: #fff2e8;
+  color: #ff8c42;
+  font-size: 25rpx;
+  text-align: center;
+}
+
+.state-box {
+  display: flex;
+  min-height: 480rpx;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40rpx;
+  box-sizing: border-box;
+}
+
+.state-icon {
+  font-size: 76rpx;
+}
+
+.state-text {
+  margin-top: 22rpx;
+  color: #6f625a;
+  font-size: 28rpx;
+  text-align: center;
+}
+
+.retry-button {
+  width: 220rpx;
+  margin-top: 30rpx;
+  border-radius: 12rpx;
+  background: #ff8c42;
+  color: #ffffff;
+  font-size: 28rpx;
+}
+
+.retry-button::after,
+.add-button::after {
+  border: 0;
+}
+
+.add-button {
+  position: fixed;
+  right: 38rpx;
+  bottom: 48rpx;
+  z-index: 5;
+  width: 104rpx;
+  height: 104rpx;
+  padding: 0;
+  border-radius: 50%;
+  background: #ff8c42;
+  box-shadow: 0 10rpx 28rpx rgba(255, 140, 66, 0.35);
+  color: #ffffff;
+  font-size: 58rpx;
+  font-weight: 300;
+  line-height: 96rpx;
+}
+
+.add-button[disabled] {
+  background: #ffc7a3;
+  color: #ffffff;
+}
+
+.load-more {
+  padding: 28rpx 0 34rpx;
+  color: #aaa09a;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.retry-more {
+  color: #ff8c42;
+}
+
+.skeleton-photo {
+  animation: pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}

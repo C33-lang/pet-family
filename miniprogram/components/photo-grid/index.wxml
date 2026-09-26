@@ -1,0 +1,57 @@
+<view class="photo-panel">
+  <view wx:if="{{uploading}}" class="upload-progress">
+    正在上传 {{uploadCurrent}}/{{uploadTotal}}
+  </view>
+
+  <view wx:if="{{status === 'loading'}}" class="photo-grid">
+    <view class="skeleton-photo" wx:for="{{[1, 2, 3, 4, 5, 6]}}" wx:key="*this"></view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="reload">重新加载</button>
+  </view>
+
+  <view wx:elif="{{status === 'empty' && !failedUploads.length}}" class="state-box">
+    <view class="state-icon">📷</view>
+    <view class="state-text">还没有照片，点 + 记录毛孩子的日常</view>
+  </view>
+
+  <scroll-view wx:else class="photo-scroll" scroll-y lower-threshold="100" bindscrolltolower="handleLoadMore">
+    <view class="photo-grid">
+      <view
+        class="photo-cell"
+        wx:for="{{photos}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        data-file-id="{{item.fileID}}"
+        bindtap="handlePreview"
+        bindlongpress="handleDelete"
+      >
+        <image class="photo-image" src="{{item.fileID}}" mode="aspectFill"></image>
+        <view wx:if="{{deletingId === item._id}}" class="photo-mask">删除中</view>
+      </view>
+
+      <view
+        class="photo-cell failed-cell"
+        wx:for="{{failedUploads}}"
+        wx:key="localId"
+        data-id="{{item.localId}}"
+        bindtap="handleRetryUpload"
+      >
+        <image class="photo-image" src="{{item.tempFilePath}}" mode="aspectFill"></image>
+        <view class="photo-mask">上传失败
+点击重试</view>
+      </view>
+    </view>
+
+    <view class="load-more" wx:if="{{loadingMore}}">加载中...</view>
+    <view class="load-more retry-more" wx:elif="{{loadMoreError}}" bindtap="handleRetryMore">
+      加载失败，点击重试
+    </view>
+    <view class="load-more" wx:elif="{{!hasMore && photos.length}}">没有更多了</view>
+  </scroll-view>
+
+  <button class="add-button" disabled="{{uploading}}" bindtap="handleAdd">+</button>
+</view>
