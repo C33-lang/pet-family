@@ -1,0 +1,59 @@
+<view class="record-panel">
+  <view wx:if="{{status === 'loading'}}" class="skeleton-list">
+    <view class="skeleton-item" wx:for="{{[1, 2, 3]}}" wx:key="*this">
+      <view class="skeleton icon-skeleton"></view>
+      <view class="skeleton-content">
+        <view class="skeleton title-skeleton"></view>
+        <view class="skeleton line-skeleton"></view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="reload">重新加载</button>
+  </view>
+
+  <view wx:elif="{{status === 'empty'}}" class="state-box">
+    <view class="state-icon">📝</view>
+    <view class="state-text">还没有记录，点右下角 + 开始</view>
+    <view class="state-hint">每一次照顾，都是成长的足迹</view>
+  </view>
+
+  <scroll-view
+    wx:else
+    class="record-scroll"
+    scroll-y
+    lower-threshold="100"
+    bindscrolltolower="handleLoadMore"
+  >
+    <view
+      class="record-item"
+      wx:for="{{records}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindlongpress="handleDelete"
+    >
+      <view class="record-icon">{{item.icon}}</view>
+      <view class="record-content">
+        <view class="record-head">
+          <text class="record-name">{{item.typeName}}</text>
+          <text class="record-time">{{item.timeText}}</text>
+        </view>
+        <view wx:if="{{item.summary}}" class="record-summary">{{item.summary}}</view>
+        <view wx:else class="record-summary muted">暂无备注</view>
+      </view>
+    </view>
+
+    <view class="load-more" wx:if="{{loadingMore}}">加载中...</view>
+    <view
+      class="load-more retry-more"
+      wx:elif="{{loadMoreError}}"
+      bindtap="handleRetryMore"
+    >加载失败，点击重试</view>
+    <view class="load-more" wx:elif="{{!hasMore}}">没有更多了</view>
+  </scroll-view>
+
+  <button class="add-button" bindtap="handleAdd">+</button>
+</view>

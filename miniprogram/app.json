@@ -2,7 +2,8 @@
   "pages": [
     "pages/pets/list/index",
     "pages/pets/detail/index",
-    "pages/pets/edit/index"
+    "pages/pets/edit/index",
+    "pages/records/add/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFFFF",

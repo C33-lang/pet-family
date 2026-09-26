@@ -1,0 +1,70 @@
+<view class="page">
+  <view class="form-card">
+    <view class="section-title">记录类型 <text class="required">*</text></view>
+    <view class="type-grid">
+      <view
+        class="type-item {{selectedType === item.value ? 'selected' : ''}}"
+        wx:for="{{recordTypes}}"
+        wx:key="value"
+        data-type="{{item.value}}"
+        bindtap="handleTypeSelect"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <view class="type-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="field-row">
+      <text class="field-label">发生日期</text>
+      <picker mode="date" value="{{date}}" end="{{maxDate}}" bindchange="handleDateChange">
+        <view class="picker-value">{{date}} <text class="arrow">›</text></view>
+      </picker>
+    </view>
+    <view class="divider"></view>
+    <view class="field-row">
+      <text class="field-label">发生时间</text>
+      <picker mode="time" value="{{time}}" end="{{maxTime}}" bindchange="handleTimeChange">
+        <view class="picker-value">{{time}} <text class="arrow">›</text></view>
+      </picker>
+    </view>
+  </view>
+
+  <view wx:if="{{selectedType === 'weight'}}" class="form-card">
+    <view class="field-row">
+      <text class="field-label">体重 <text class="required">*</text></text>
+      <view class="weight-input-wrap">
+        <input
+          class="weight-input"
+          type="digit"
+          value="{{weight}}"
+          placeholder="0.0"
+          maxlength="6"
+          bindinput="handleWeightInput"
+        />
+        <text class="weight-unit">kg</text>
+      </view>
+    </view>
+    <view class="field-hint">请输入大于 0 的数字，最多保留一位小数</view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-title">备注</view>
+    <textarea
+      class="content-input"
+      value="{{content}}"
+      placeholder="记录这次照顾的细节（选填）"
+      maxlength="500"
+      bindinput="handleContentInput"
+    ></textarea>
+    <view class="count-text">{{content.length}}/500</view>
+  </view>
+
+  <button
+    class="submit-button"
+    disabled="{{!canSubmit || submitting}}"
+    loading="{{submitting}}"
+    bindtap="handleSubmit"
+  >保存记录</button>
+</view>

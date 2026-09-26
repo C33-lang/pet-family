@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "宠物详情"
+  "navigationBarTitleText": "宠物详情",
+  "usingComponents": {
+    "record-list": "/components/record-list/index"
+  }
 }

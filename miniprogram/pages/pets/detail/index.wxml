@@ -55,12 +55,13 @@
       >提醒</view>
     </view>
 
-    <view class="tab-panel">
-      <view class="panel-icon">{{activeTab === 'records' ? '📝' : activeTab === 'expenses' ? '🧾' : '⏰'}}</view>
+    <record-list wx:if="{{activeTab === 'records'}}" pet-id="{{id}}"></record-list>
+
+    <view wx:else class="tab-panel">
+      <view class="panel-icon">{{activeTab === 'expenses' ? '🧾' : '⏰'}}</view>
       <view class="panel-title">
-        {{activeTab === 'records' ? '还没有记录' : activeTab === 'expenses' ? '花费模块开发中' : '提醒模块开发中'}}
+        {{activeTab === 'expenses' ? '花费模块开发中' : '提醒模块开发中'}}
       </view>
-      <view class="panel-hint" wx:if="{{activeTab === 'records'}}">以后每一次成长，都可以在这里留下足迹</view>
     </view>
 
     <button
