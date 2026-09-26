@@ -1,0 +1,47 @@
+<view class="page">
+  <view wx:if="{{status === 'loading'}}" class="skeleton" aria-label="正在加载">
+    <view class="skeleton-card"></view>
+    <view class="skeleton-line skeleton-line-wide"></view>
+    <view class="skeleton-line"></view>
+    <view class="skeleton-card skeleton-card-small"></view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-card">
+    <view class="state-title">加载失败</view>
+    <view class="state-description">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="loadData" loading="{{retrying}}">重新加载</button>
+  </view>
+
+  <block wx:else>
+    <view class="user-card">
+      <view wx:if="{{!userInfo.avatarUrl}}" class="avatar avatar-placeholder">🐾</view>
+      <image wx:else class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view class="user-content">
+        <view class="nickname">{{userInfo.nickName}}</view>
+        <view class="user-caption">记录每一份陪伴，见证一起成长</view>
+      </view>
+    </view>
+
+    <view class="section-title">我的数据</view>
+    <view class="stats-card">
+      <view class="stat-item" bindtap="handlePetsTap">
+        <view class="stat-value">{{petCount}}</view>
+        <view class="stat-label">宠物数量</view>
+      </view>
+    </view>
+
+    <view class="section-title">成长等级</view>
+    <view class="level-card">
+      <view class="level-header">
+        <view>
+          <view class="level-title">Lv.{{level}}</view>
+          <view class="level-caption">持续记录，解锁更多成长成就</view>
+        </view>
+        <view class="exp-text">{{exp}} / {{nextLevelExp}} EXP</view>
+      </view>
+      <view class="progress-track">
+        <view class="progress-value" style="width: {{progressPercent}}%;"></view>
+      </view>
+    </view>
+  </block>
+</view>

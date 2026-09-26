@@ -3,7 +3,8 @@
     "pages/pets/list/index",
     "pages/pets/detail/index",
     "pages/pets/edit/index",
-    "pages/records/add/index"
+    "pages/records/add/index",
+    "pages/me/index"
   ],
   "window": {
     "navigationBarBackgroundColor": "#FFFFFF",
@@ -13,5 +14,25 @@
     "backgroundTextStyle": "light"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF8C42",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/pets/list/index",
+        "text": "宠物",
+        "iconPath": "assets/tabbar/paw.png",
+        "selectedIconPath": "assets/tabbar/paw-active.png"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我的",
+        "iconPath": "assets/tabbar/user.png",
+        "selectedIconPath": "assets/tabbar/user-active.png"
+      }
+    ]
+  }
 }
