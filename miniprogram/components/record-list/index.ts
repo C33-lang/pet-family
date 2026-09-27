@@ -147,6 +147,21 @@ Component({
       })
     },
 
+    handleView(event: WechatMiniprogram.BaseEvent) {
+      const id = event.currentTarget.dataset.id as string
+      const record = this.data.records.find((item) => item._id === id)
+      if (!record) {
+        return
+      }
+      wx.showModal({
+        title: `${record.typeName} · ${record.timeText}`,
+        content: record.summary || '暂无备注',
+        showCancel: false,
+        confirmText: '知道了',
+        confirmColor: '#FF8C42',
+      })
+    },
+
     async handleDelete(event: WechatMiniprogram.BaseEvent) {
       const id = event.currentTarget.dataset.id as string
       if (!id) {

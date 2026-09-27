@@ -33,6 +33,7 @@
       wx:for="{{records}}"
       wx:key="_id"
       data-id="{{item._id}}"
+      bindtap="handleView"
       bindlongpress="handleDelete"
     >
       <view class="record-icon">{{item.icon}}</view>
