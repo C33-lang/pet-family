@@ -24,13 +24,28 @@ function createInvite() {
   return { code, expireAt: Date.now() + INVITE_TTL }
 }
 
+/**
+ * 确保家庭相关集合存在。
+ * 云数据库没有「如果不存在才建」的原子操作，createCollection 对已存在的集合会报错，
+ * 这里直接吞掉所有创建报错（已存在时创建必然失败，失败即成功）。
+ */
+async function ensureCollections(db) {
+  await db.createCollection('families').catch(() => {})
+  await db.createCollection('family_members').catch(() => {})
+}
+
+function isNotExistError(error) {
+  const message = (error && (error.errMsg || error.message)) || String(error || '')
+  // 云端报错可能是 "does not exist" / "not exists" / "collection not exists" 等，统一放宽
+  return /not exist/i.test(message)
+}
+
 async function readMembership(db, openid) {
   try {
     const result = await db.collection('family_members').doc(openid).get()
     return result.data || null
   } catch (error) {
-    const message = (error && (error.errMsg || error.message)) || ''
-    if (/does not exist/i.test(message)) {
+    if (isNotExistError(error)) {
       return null
     }
     throw error
@@ -128,6 +143,7 @@ async function createFamily(db, openid) {
  * 取当前用户的家庭上下文；没有家庭则自动创建并把历史数据迁入。
  */
 async function getFamilyContext(db, openid) {
+  await ensureCollections(db)
   const membership = await readMembership(db, openid)
   if (membership && membership.familyId) {
     return { familyId: membership.familyId, role: membership.role || 'member' }
