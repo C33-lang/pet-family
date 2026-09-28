@@ -1,5 +1,5 @@
 const cloud = require('wx-server-sdk')
-const { readMembership, migrateLegacyData } = require('./family')
+const { readMembership, migrateLegacyData, countMembers } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
@@ -48,7 +48,28 @@ exports.main = async (event) => {
     }
 
     if (currentFamilyId) {
-      return failure(40901, '你已在一个家庭中，请先退出后再加入')
+      const memberCount = await countMembers(db, currentFamilyId)
+      const petCount = await db
+        .collection('pets')
+        .where({ familyId: currentFamilyId })
+        .count()
+
+      // 新用户首次打开会自动建一个空家庭；这种「只有自己、还没放宠物」的家庭
+      // 允许被直接替换，否则被邀请时总要先去退出，体验很别扭。
+      const replaceable =
+        membership.role === 'owner' &&
+        memberCount <= 1 &&
+        petCount.total === 0
+
+      if (!replaceable) {
+        return failure(40901, '你已在一个家庭中，请先退出后再加入')
+      }
+
+      await db
+        .collection('families')
+        .doc(currentFamilyId)
+        .remove()
+        .catch(() => {})
     }
 
     const now = Date.now()
