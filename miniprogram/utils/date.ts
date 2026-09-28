@@ -106,3 +106,55 @@ export function calculatePetAge(
 
   return `${months}个月`
 }
+
+/**
+ * 精确到天的宠物年龄（详情页使用）。
+ * 列表页仍用 calculatePetAge 保持简洁，避免卡片文字过长。
+ */
+export function calculatePetAgeDetail(
+  birthday: string,
+  today = new Date()
+): string {
+  const birthDate = parseLocalDate(birthday)
+  const current = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  )
+
+  if (!birthDate || birthDate.getTime() > current.getTime()) {
+    return '年龄未知'
+  }
+
+  let totalMonths =
+    (current.getFullYear() - birthDate.getFullYear()) * 12 +
+    current.getMonth() -
+    birthDate.getMonth()
+
+  if (addCalendarMonths(birthDate, totalMonths).getTime() > current.getTime()) {
+    totalMonths -= 1
+  }
+
+  const anchor = addCalendarMonths(birthDate, Math.max(0, totalMonths))
+  const days = diffCalendarDays(anchor, current)
+
+  if (totalMonths <= 0) {
+    return days === 0 ? '今天出生' : `${days}天`
+  }
+
+  const years = Math.floor(totalMonths / 12)
+  const months = totalMonths % 12
+  const parts: string[] = []
+
+  if (years > 0) {
+    parts.push(`${years}岁`)
+  }
+  if (months > 0) {
+    parts.push(`${months}个月`)
+  }
+  if (days > 0) {
+    parts.push(`${days}天`)
+  }
+
+  return parts.join('')
+}

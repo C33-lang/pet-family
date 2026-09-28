@@ -1,5 +1,6 @@
 import { createPet, getPetDetail, updatePet } from '../../../services/pet'
 import { formatDate, isFutureDate } from '../../../utils/date'
+import { getThemeColor, syncThemeChrome } from '../../../utils/theme'
 import { uploadPetAvatar } from '../../../utils/upload'
 
 const EMPTY_FORM: PetFormData = {
@@ -23,7 +24,14 @@ Page({
     canSubmit: false,
     submitting: false,
     maxDate: formatDate(new Date()),
+    themeBg: getThemeColor(),
     errorMessage: '',
+  },
+
+  onShow() {
+    const themeBg = getThemeColor()
+    this.setData({ themeBg })
+    syncThemeChrome(themeBg)
   },
 
   onLoad(options: Record<string, string>) {

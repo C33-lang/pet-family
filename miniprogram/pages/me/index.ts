@@ -1,4 +1,11 @@
 import { getPetList } from '../../services/pet'
+import {
+  THEMES,
+  getTheme,
+  getThemeKey,
+  setThemeKey,
+  syncThemeChrome,
+} from '../../utils/theme'
 
 const DEFAULT_AVATAR = ''
 
@@ -23,6 +30,10 @@ Page({
     exp: 0,
     nextLevelExp: 100,
     progressPercent: 0,
+    themes: THEMES,
+    themeKey: getThemeKey(),
+    themeName: getTheme().name,
+    themeBg: getTheme().color,
   },
 
   onLoad() {
@@ -30,9 +41,35 @@ Page({
   },
 
   onShow() {
+    this.applyTheme()
     if (this.data.status === 'success') {
       this.loadPetCount()
     }
+  },
+
+  applyTheme() {
+    const theme = getTheme()
+    this.setData({
+      themeKey: theme.key,
+      themeName: theme.name,
+      themeBg: theme.color,
+    })
+    syncThemeChrome(theme.color, true)
+  },
+
+  handleThemeTap(event: WechatMiniprogram.BaseEvent) {
+    const key = event.currentTarget.dataset.key as string
+    if (!key || key === this.data.themeKey) {
+      return
+    }
+
+    if (!setThemeKey(key)) {
+      wx.showToast({ title: '设置失败，请重试', icon: 'none' })
+      return
+    }
+
+    this.applyTheme()
+    wx.showToast({ title: '背景已更新', icon: 'none' })
   },
 
   loadData() {

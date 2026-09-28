@@ -1,5 +1,6 @@
 import { createRecord } from '../../../services/record'
 import { formatDate } from '../../../utils/date'
+import { getThemeColor, syncThemeChrome } from '../../../utils/theme'
 
 const RECORD_TYPES = [
   { value: 'feed', label: '喂食', icon: '🍚' },
@@ -38,6 +39,13 @@ Page({
     weight: '',
     canSubmit: false,
     submitting: false,
+    themeBg: getThemeColor(),
+  },
+
+  onShow() {
+    const themeBg = getThemeColor()
+    this.setData({ themeBg })
+    syncThemeChrome(themeBg)
   },
 
   onLoad(options: Record<string, string>) {

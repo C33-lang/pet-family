@@ -1,20 +1,35 @@
 import { getPetList } from '../../../services/pet'
 import { calculatePetAge } from '../../../utils/date'
+import { getThemeColor, syncThemeChrome } from '../../../utils/theme'
 
 type PetListItem = Pet & {
   ageText: string
   level: number
 }
 
+/** 宠物数量达到该值时显示搜索框，少量宠物不打扰 */
+const SEARCH_THRESHOLD = 6
+
 Page({
   data: {
     status: 'loading' as 'loading' | 'empty' | 'ready' | 'error' | 'unauthorized',
     pets: [] as PetListItem[],
+    filteredPets: [] as PetListItem[],
+    showSearch: false,
+    keyword: '',
+    themeBg: getThemeColor(),
     errorMessage: '',
   },
 
   onShow() {
+    this.applyTheme()
     this.loadPets()
+  },
+
+  applyTheme() {
+    const themeBg = getThemeColor()
+    this.setData({ themeBg })
+    syncThemeChrome(themeBg, true)
   },
 
   async loadPets() {
@@ -31,6 +46,8 @@ Page({
 
       this.setData({
         pets: list,
+        filteredPets: this.filterPets(list, this.data.keyword),
+        showSearch: list.length >= SEARCH_THRESHOLD,
         status: list.length ? 'ready' : 'empty',
       })
     } catch (error) {
@@ -45,6 +62,33 @@ Page({
         errorMessage: requestError.message || '网络开小差了，请重试',
       })
     }
+  },
+
+  filterPets(list: PetListItem[], keyword: string): PetListItem[] {
+    const word = keyword.trim().toLowerCase()
+    if (!word) {
+      return list
+    }
+    return list.filter((pet) => {
+      const name = (pet.name || '').toLowerCase()
+      const breed = (pet.breed || '').toLowerCase()
+      return name.indexOf(word) > -1 || breed.indexOf(word) > -1
+    })
+  },
+
+  handleKeywordInput(event: WechatMiniprogram.Input) {
+    const keyword = event.detail.value || ''
+    this.setData({
+      keyword,
+      filteredPets: this.filterPets(this.data.pets, keyword),
+    })
+  },
+
+  handleClearKeyword() {
+    this.setData({
+      keyword: '',
+      filteredPets: this.data.pets,
+    })
   },
 
   async handleAuthorize() {

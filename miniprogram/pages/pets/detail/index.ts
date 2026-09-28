@@ -1,5 +1,6 @@
 import { deletePet, getPetDetail } from '../../../services/pet'
-import { calculatePetAge } from '../../../utils/date'
+import { calculatePetAgeDetail } from '../../../utils/date'
+import { getThemeColor, syncThemeChrome } from '../../../utils/theme'
 
 const GENDER_TEXT = {
   male: '公',
@@ -14,6 +15,7 @@ Page({
     pet: null as (Pet & { ageText: string; genderText: string }) | null,
     activeTab: 'records',
     deleting: false,
+    themeBg: getThemeColor(),
     errorMessage: '',
   },
 
@@ -30,9 +32,16 @@ Page({
   },
 
   onShow() {
+    this.applyTheme()
     if (this.data.id) {
       this.loadDetail()
     }
+  },
+
+  applyTheme() {
+    const themeBg = getThemeColor()
+    this.setData({ themeBg })
+    syncThemeChrome(themeBg)
   },
 
   async loadDetail() {
@@ -43,7 +52,7 @@ Page({
         status: 'ready',
         pet: {
           ...pet,
-          ageText: calculatePetAge(pet.birthday),
+          ageText: calculatePetAgeDetail(pet.birthday),
           genderText: GENDER_TEXT[pet.gender],
         },
       })

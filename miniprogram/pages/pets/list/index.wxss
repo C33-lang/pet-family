@@ -201,3 +201,40 @@ page {
     background-position: 0 0;
   }
 }
+
+/* ---------- 搜索栏（宠物数量较多时显示） ---------- */
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding: 0 24rpx;
+  height: 80rpx;
+  background: #ffffff;
+  border-radius: 40rpx;
+  box-shadow: 0 4rpx 16rpx rgba(47, 42, 39, 0.05);
+}
+
+.search-icon {
+  font-size: 26rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #2f2a27;
+}
+
+.search-placeholder {
+  color: #b8b0aa;
+}
+
+.search-clear {
+  padding: 8rpx 12rpx;
+  font-size: 26rpx;
+  color: #b8b0aa;
+}
+
+.search-empty {
+  padding-top: 120rpx;
+}

@@ -1,4 +1,4 @@
-<view class="page">
+<view class="page" style="background-color: {{themeBg}};">
   <view class="form-card">
     <view class="section-title">记录类型 <text class="required">*</text></view>
     <view class="type-grid">
