@@ -1,8 +1,13 @@
 import { getPetList } from '../../services/pet'
 import {
-  THEMES,
+  CUSTOM_SATURATION,
+  LIGHT_OPTIONS,
+  THEME_GROUPS,
+  getCustomThemeState,
   getTheme,
   getThemeKey,
+  hslToHex,
+  setCustomTheme,
   setThemeKey,
   syncThemeChrome,
 } from '../../utils/theme'
@@ -15,6 +20,14 @@ interface UserInfo {
   avatarUrl: string
   nickName: string
 }
+
+function buildCustomColor(hue: number, lightIndex: number): string {
+  const level = LIGHT_OPTIONS[lightIndex] || LIGHT_OPTIONS[1]
+  return hslToHex(hue, CUSTOM_SATURATION, level.value)
+}
+
+const initialCustom = getCustomThemeState()
+const initialTheme = getTheme()
 
 Page({
   data: {
@@ -30,10 +43,14 @@ Page({
     exp: 0,
     nextLevelExp: 100,
     progressPercent: 0,
-    themes: THEMES,
+    themeGroups: THEME_GROUPS,
+    lightOptions: LIGHT_OPTIONS,
     themeKey: getThemeKey(),
-    themeName: getTheme().name,
-    themeBg: getTheme().color,
+    themeName: initialTheme.name,
+    themeBg: initialTheme.color,
+    hue: initialCustom.hue,
+    lightIndex: initialCustom.lightIndex,
+    customColor: buildCustomColor(initialCustom.hue, initialCustom.lightIndex),
   },
 
   onLoad() {
@@ -49,10 +66,14 @@ Page({
 
   applyTheme() {
     const theme = getTheme()
+    const customState = getCustomThemeState()
     this.setData({
       themeKey: theme.key,
       themeName: theme.name,
       themeBg: theme.color,
+      hue: customState.hue,
+      lightIndex: customState.lightIndex,
+      customColor: buildCustomColor(customState.hue, customState.lightIndex),
     })
     syncThemeChrome(theme.color, true)
   },
@@ -70,6 +91,50 @@ Page({
 
     this.applyTheme()
     wx.showToast({ title: '背景已更新', icon: 'none' })
+  },
+
+  applyCustomTheme(hue: number, lightIndex: number, withToast = false): void {
+    const theme = setCustomTheme(hue, lightIndex)
+    if (!theme) {
+      wx.showToast({ title: '设置失败，请重试', icon: 'none' })
+      return
+    }
+
+    this.setData({
+      themeKey: theme.key,
+      themeName: theme.name,
+      themeBg: theme.color,
+      hue,
+      lightIndex,
+      customColor: theme.color,
+    })
+    syncThemeChrome(theme.color, true)
+
+    if (withToast) {
+      wx.showToast({ title: '背景已更新', icon: 'none' })
+    }
+  },
+
+  handleHueChanging(event: WechatMiniprogram.SliderChange) {
+    // 拖动过程中仅预览色块，松手后才写库并全局生效
+    const hue = Math.round(event.detail.value)
+    this.setData({
+      hue,
+      customColor: buildCustomColor(hue, this.data.lightIndex),
+    })
+  },
+
+  handleHueChange(event: WechatMiniprogram.SliderChange) {
+    const hue = Math.round(event.detail.value)
+    this.applyCustomTheme(hue, this.data.lightIndex)
+  },
+
+  handleLightTap(event: WechatMiniprogram.BaseEvent) {
+    const lightIndex = Number(event.currentTarget.dataset.index)
+    if (Number.isNaN(lightIndex) || lightIndex === this.data.lightIndex) {
+      return
+    }
+    this.applyCustomTheme(this.data.hue, lightIndex)
   },
 
   loadData() {

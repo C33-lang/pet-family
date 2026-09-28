@@ -46,18 +46,67 @@
 
     <view class="section-title">背景颜色</view>
     <view class="theme-card">
-      <view class="theme-swatches">
-        <view
-          wx:for="{{themes}}"
-          wx:key="key"
-          class="theme-swatch {{item.key === themeKey ? 'active' : ''}}"
-          style="background-color: {{item.color}};"
-          data-key="{{item.key}}"
-          bindtap="handleThemeTap"
-        >
-          <text wx:if="{{item.key === themeKey}}" class="swatch-check">✓</text>
+      <block wx:for="{{themeGroups}}" wx:key="name" wx:for-item="group">
+        <view class="theme-group-name">{{group.name}}</view>
+        <view class="theme-swatches">
+          <view
+            wx:for="{{group.themes}}"
+            wx:key="key"
+            wx:for-item="option"
+            class="theme-swatch {{option.key === themeKey ? 'active' : ''}}"
+            style="background-color: {{option.color}};"
+            data-key="{{option.key}}"
+            bindtap="handleThemeTap"
+          >
+            <text wx:if="{{option.key === themeKey}}" class="swatch-check">✓</text>
+          </view>
+        </view>
+      </block>
+
+      <view class="theme-group-name">自定义</view>
+      <view class="custom-panel">
+        <view class="custom-preview-row">
+          <view
+            class="custom-preview {{themeKey === 'custom' ? 'active' : ''}}"
+            style="background-color: {{customColor}};"
+          >
+            <text wx:if="{{themeKey === 'custom'}}" class="swatch-check">✓</text>
+          </view>
+          <view class="custom-preview-info">
+            <view class="custom-preview-title">{{themeKey === 'custom' ? '使用中' : '拖动色相条后自动应用'}}</view>
+            <view class="custom-preview-hex">{{customColor}}</view>
+          </view>
+        </view>
+
+        <view class="custom-row">
+          <text class="custom-label">色相</text>
+          <slider
+            class="custom-slider"
+            min="0"
+            max="360"
+            value="{{hue}}"
+            activeColor="#FF8C42"
+            backgroundColor="#E8E2DC"
+            block-size="20"
+            bindchanging="handleHueChanging"
+            bindchange="handleHueChange"
+          />
+        </view>
+
+        <view class="custom-row">
+          <text class="custom-label">明度</text>
+          <view class="light-options">
+            <view
+              wx:for="{{lightOptions}}"
+              wx:key="name"
+              class="light-option {{index === lightIndex ? 'active' : ''}}"
+              data-index="{{index}}"
+              bindtap="handleLightTap"
+            >{{item.name}}</view>
+          </view>
         </view>
       </view>
+
       <view class="theme-hint">当前：{{themeName}}</view>
     </view>
   </block>

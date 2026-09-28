@@ -204,21 +204,35 @@ page {
   box-shadow: 0 8rpx 24rpx rgba(47, 42, 39, 0.05);
 }
 
+.theme-group-name {
+  font-size: 24rpx;
+  color: #9a938d;
+  margin: 20rpx 0 12rpx;
+}
+
+.theme-group-name:first-child {
+  margin-top: 0;
+}
+
 .theme-swatches {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
 }
 
 .theme-swatch {
   width: 80rpx;
   height: 80rpx;
+  margin: 0 20rpx 20rpx 0;
   border-radius: 50%;
   border: 2rpx solid rgba(47, 42, 39, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+}
+
+.theme-swatch:nth-child(6n) {
+  margin-right: 0;
 }
 
 .theme-swatch.active {
@@ -229,6 +243,92 @@ page {
   font-size: 32rpx;
   color: #ff8c42;
   font-weight: 600;
+}
+
+.custom-panel {
+  padding: 24rpx;
+  background: #fbf9f7;
+  border-radius: 20rpx;
+}
+
+.custom-preview-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.custom-preview {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 20rpx;
+  border: 2rpx solid rgba(47, 42, 39, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.custom-preview.active {
+  border: 4rpx solid #ff8c42;
+}
+
+.custom-preview-info {
+  margin-left: 20rpx;
+}
+
+.custom-preview-title {
+  font-size: 26rpx;
+  color: #2f2a27;
+}
+
+.custom-preview-hex {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #9a938d;
+}
+
+.custom-row {
+  display: flex;
+  align-items: center;
+  margin-top: 12rpx;
+}
+
+.custom-label {
+  width: 72rpx;
+  font-size: 24rpx;
+  color: #6f6862;
+}
+
+.custom-slider {
+  flex: 1;
+  margin: 0;
+}
+
+.light-options {
+  flex: 1;
+  display: flex;
+}
+
+.light-option {
+  flex: 1;
+  margin-right: 16rpx;
+  padding: 12rpx 0;
+  text-align: center;
+  font-size: 24rpx;
+  color: #6f6862;
+  background: #ffffff;
+  border-radius: 12rpx;
+  border: 2rpx solid rgba(47, 42, 39, 0.08);
+}
+
+.light-option:last-child {
+  margin-right: 0;
+}
+
+.light-option.active {
+  color: #ff8c42;
+  border-color: #ff8c42;
+  background: #fff6ef;
 }
 
 .theme-hint {
