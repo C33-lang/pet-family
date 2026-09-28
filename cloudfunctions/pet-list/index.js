@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -13,10 +14,10 @@ function failure(code, message) {
   return { code, message, data: null }
 }
 
-async function getAllPets(openid) {
+async function getAllPets(familyId) {
   const countResult = await db
     .collection('pets')
-    .where({ _openid: openid })
+    .where({ familyId })
     .count()
   const total = countResult.total
   const tasks = []
@@ -25,7 +26,7 @@ async function getAllPets(openid) {
     tasks.push(
       db
         .collection('pets')
-        .where({ _openid: openid })
+        .where({ familyId })
         .orderBy('createdAt', 'desc')
         .skip(offset)
         .limit(PAGE_SIZE)
@@ -48,16 +49,18 @@ exports.main = async (event) => {
   }
 
   try {
+    const context = await getFamilyContext(db, OPENID)
+
     if (event.id) {
       const result = await db
         .collection('pets')
-        .where({ _id: event.id, _openid: OPENID })
+        .where({ _id: event.id, familyId: context.familyId })
         .limit(1)
         .get()
       return success({ pet: result.data[0] || null })
     }
 
-    const list = await getAllPets(OPENID)
+    const list = await getAllPets(context.familyId)
     return success({ list })
   } catch (error) {
     console.error('获取宠物失败', error)

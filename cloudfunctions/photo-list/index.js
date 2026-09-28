@@ -1,5 +1,6 @@
 const cloud = require('wx-server-sdk')
 const { PAGE_SIZE, parseCursor } = require('./pagination')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
@@ -23,11 +24,12 @@ exports.main = async (event) => {
   }
 
   try {
+    const context = await getFamilyContext(db, OPENID)
     const petResult = await db.collection('pets')
-      .where({ _id: event.petId, _openid: OPENID }).limit(1).get()
+      .where({ _id: event.petId, familyId: context.familyId }).limit(1).get()
     if (!petResult.data.length) return failure(40401, '宠物不存在或无权操作')
 
-    const ownerFilter = { _openid: OPENID, petId: event.petId }
+    const ownerFilter = { familyId: context.familyId, petId: event.petId }
     const filter = cursor
       ? command.and([
           ownerFilter,

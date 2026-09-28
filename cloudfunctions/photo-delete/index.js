@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
@@ -14,13 +15,15 @@ exports.main = async (event) => {
   }
 
   try {
+    const context = await getFamilyContext(db, OPENID)
+
     const photoResult = await db.collection('photos')
-      .where({ _id: event.id, _openid: OPENID }).limit(1).get()
+      .where({ _id: event.id, familyId: context.familyId }).limit(1).get()
     const photo = photoResult.data[0]
     if (!photo) return failure(40402, '照片不存在或无权操作')
 
     const petResult = await db.collection('pets')
-      .where({ _id: photo.petId, _openid: OPENID }).limit(1).get()
+      .where({ _id: photo.petId, familyId: context.familyId }).limit(1).get()
     if (!petResult.data.length) return failure(40401, '宠物不存在或无权操作')
 
     const deleteResult = await cloud.deleteFile({ fileList: [photo.fileID] })
@@ -31,7 +34,7 @@ exports.main = async (event) => {
     }
 
     await db.collection('photos')
-      .where({ _id: event.id, _openid: OPENID }).remove()
+      .where({ _id: event.id, familyId: context.familyId }).remove()
     return success({ id: event.id })
   } catch (error) {
     console.error('删除照片失败', error)

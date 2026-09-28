@@ -1,3 +1,4 @@
+import { getFamilyInfo, leaveFamily } from '../../services/family'
 import { getPetList } from '../../services/pet'
 import {
   CUSTOM_SATURATION,
@@ -51,6 +52,9 @@ Page({
     hue: initialCustom.hue,
     lightIndex: initialCustom.lightIndex,
     customColor: buildCustomColor(initialCustom.hue, initialCustom.lightIndex),
+    family: null as FamilyInfo | null,
+    familyError: '',
+    familyBusy: false,
   },
 
   onLoad() {
@@ -61,6 +65,18 @@ Page({
     this.applyTheme()
     if (this.data.status === 'success') {
       this.loadPetCount()
+      this.loadFamily()
+    }
+  },
+
+  onShareAppMessage() {
+    const family = this.data.family
+    const code = family && family.inviteCode ? family.inviteCode : ''
+    return {
+      title: '一起来记录毛孩子的日常',
+      path: code
+        ? `/pages/family/join/index?code=${code}`
+        : '/pages/family/join/index',
     }
   },
 
@@ -143,7 +159,7 @@ Page({
       retrying: true,
     })
     this.loadUserInfo()
-    this.loadPetCount()
+    Promise.all([this.loadPetCount(), this.loadFamily()])
       .then(() => {
         this.setData({
           status: 'success',
@@ -184,9 +200,85 @@ Page({
     })
   },
 
+  // 家庭信息失败不影响整页，只在卡片内提示
+  loadFamily(): Promise<void> {
+    return getFamilyInfo()
+      .then((family) => {
+        this.setData({ family, familyError: '' })
+      })
+      .catch((error: { message?: string }) => {
+        this.setData({
+          family: null,
+          familyError: error?.message || '家庭信息加载失败，请重试',
+        })
+      })
+  },
+
   handlePetsTap() {
     wx.switchTab({
       url: '/pages/pets/list/index',
     })
+  },
+
+  handleCopyInvite() {
+    const family = this.data.family
+    const code = family && family.inviteCode ? family.inviteCode : ''
+    if (!code) {
+      wx.showToast({ title: '邀请码获取中，请稍候', icon: 'none' })
+      return
+    }
+
+    wx.setClipboardData({
+      data: code,
+      success: () => {
+        wx.showToast({ title: '邀请码已复制', icon: 'none' })
+      },
+    })
+  },
+
+  handleJoinTap() {
+    wx.navigateTo({
+      url: '/pages/family/join/index',
+    })
+  },
+
+  handleLeaveTap() {
+    if (this.data.familyBusy) {
+      return
+    }
+
+    wx.showModal({
+      title: '退出家庭',
+      content: '退出后你看不到这个家庭共享的宠物数据，你自己创建的记录仍会留在家庭中。确定退出吗？',
+      confirmText: '退出',
+      confirmColor: '#E24B4A',
+      success: (result) => {
+        if (result.confirm) {
+          this.doLeaveFamily()
+        }
+      },
+    })
+  },
+
+  async doLeaveFamily() {
+    this.setData({ familyBusy: true })
+    wx.showLoading({ title: '处理中', mask: true })
+
+    try {
+      await leaveFamily()
+      wx.hideLoading()
+      wx.showToast({ title: '已退出家庭', icon: 'success' })
+      await Promise.all([this.loadPetCount(), this.loadFamily()])
+    } catch (error) {
+      wx.hideLoading()
+      const leaveError = error as Error & { code?: number }
+      wx.showModal({
+        title: '无法退出',
+        content: leaveError.message || '退出失败，请重试',
+        showCancel: false,
+      })
+    } finally {
+      this.setData({ familyBusy: false })
+    }
   },
 })

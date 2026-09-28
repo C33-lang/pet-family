@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -82,7 +83,10 @@ exports.main = async (event) => {
   }
 
   try {
-    const result = await db.collection('pets').add({ data: pet })
+    const context = await getFamilyContext(db, OPENID)
+    const result = await db
+      .collection('pets')
+      .add({ data: { ...pet, familyId: context.familyId } })
     return success({ id: result._id })
   } catch (error) {
     console.error('新增宠物失败', error)

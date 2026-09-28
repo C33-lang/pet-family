@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -26,10 +27,12 @@ exports.main = async (event) => {
   const orphanedAt = Date.now()
 
   try {
+    const context = await getFamilyContext(db, OPENID)
+
     await db.runTransaction(async (transaction) => {
       const petResult = await transaction
         .collection('pets')
-        .where({ _id: petId, _openid: OPENID })
+        .where({ _id: petId, familyId: context.familyId })
         .limit(1)
         .get()
 
@@ -47,17 +50,17 @@ exports.main = async (event) => {
 
       await transaction
         .collection('records')
-        .where({ _openid: OPENID, petId })
+        .where({ familyId: context.familyId, petId })
         .update({ data: orphanData })
 
       await transaction
         .collection('reminders')
-        .where({ _openid: OPENID, petId })
+        .where({ familyId: context.familyId, petId })
         .update({ data: orphanData })
 
       await transaction
         .collection('expenses')
-        .where({ _openid: OPENID, petIds: petId })
+        .where({ familyId: context.familyId, petIds: petId })
         .update({
           data: {
             isOrphan: true,

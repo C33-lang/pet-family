@@ -1,5 +1,6 @@
 const cloud = require('wx-server-sdk')
 const { validatePhotoAdd } = require('./validation')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 const db = cloud.database()
@@ -14,12 +15,14 @@ exports.main = async (event) => {
   if (message) return failure(40001, message)
 
   try {
+    const context = await getFamilyContext(db, OPENID)
     const petResult = await db.collection('pets')
-      .where({ _id: event.petId, _openid: OPENID }).limit(1).get()
+      .where({ _id: event.petId, familyId: context.familyId }).limit(1).get()
     if (!petResult.data.length) return failure(40401, '宠物不存在或无权操作')
 
     const photo = {
       _openid: OPENID,
+      familyId: context.familyId,
       petId: event.petId,
       fileID: event.fileID,
       createdAt: Date.now(),

@@ -1,0 +1,27 @@
+<view class="page" style="background-color: {{themeBg}};">
+  <view class="card">
+    <view class="title">加入家人的家庭</view>
+    <view class="desc">让家人打开「我的」页，把 6 位邀请码发给你。加入后，你们看到的是同一份宠物、记录和相册。</view>
+
+    <input
+      class="code-input"
+      type="text"
+      maxlength="6"
+      value="{{code}}"
+      placeholder="请输入 6 位邀请码"
+      placeholder-class="code-placeholder"
+      bindinput="handleInput"
+    />
+
+    <view wx:if="{{errorMessage}}" class="error-text">{{errorMessage}}</view>
+
+    <button
+      class="primary-button"
+      disabled="{{!canSubmit || submitting}}"
+      loading="{{submitting}}"
+      bindtap="handleSubmit"
+    >加入家庭</button>
+
+    <view class="tip">加入后你的宠物会一并并入这个家庭；若你已有自己的家庭，请先在「我的」页退出。</view>
+  </view>
+</view>

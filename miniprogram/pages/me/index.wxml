@@ -30,6 +30,40 @@
       </view>
     </view>
 
+    <view class="section-title">家庭成员</view>
+    <view class="family-card">
+      <block wx:if="{{family}}">
+        <view class="family-head">
+          <view>
+            <view class="family-name">我的家</view>
+            <view class="family-caption">{{family.role === 'owner' ? '你是创建者' : '你是家庭成员'}}</view>
+          </view>
+          <view class="family-count">{{family.memberCount}} 人</view>
+        </view>
+
+        <view class="invite-box">
+          <view class="invite-label">邀请码</view>
+          <view class="invite-code">{{family.inviteCode}}</view>
+          <view class="invite-actions">
+            <view class="invite-button" bindtap="handleCopyInvite">复制</view>
+            <button class="invite-button invite-share" open-type="share">邀请家人</button>
+          </view>
+        </view>
+        <view class="family-hint">邀请码 24 小时内有效，家人输入后即可看到同一份宠物数据</view>
+
+        <view class="family-links">
+          <view class="family-link" bindtap="handleJoinTap">加入家人的家庭</view>
+          <view class="family-link family-link-danger" bindtap="handleLeaveTap">退出家庭</view>
+        </view>
+      </block>
+
+      <block wx:else>
+        <view class="family-name">家庭信息加载失败</view>
+        <view class="family-caption">{{familyError || '请检查网络后重试'}}</view>
+        <button class="retry-button family-retry" bindtap="loadFamily">重新加载</button>
+      </block>
+    </view>
+
     <view class="section-title">成长等级</view>
     <view class="level-card">
       <view class="level-header">

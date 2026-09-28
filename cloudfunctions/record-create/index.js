@@ -1,5 +1,6 @@
 const cloud = require('wx-server-sdk')
 const { validateRecord } = require('./validation')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -25,9 +26,10 @@ exports.main = async (event) => {
   }
 
   try {
+    const context = await getFamilyContext(db, OPENID)
     const petResult = await db
       .collection('pets')
-      .where({ _id: event.petId, _openid: OPENID })
+      .where({ _id: event.petId, familyId: context.familyId })
       .limit(1)
       .get()
 
@@ -38,6 +40,7 @@ exports.main = async (event) => {
     const now = Date.now()
     const record = {
       _openid: OPENID,
+      familyId: context.familyId,
       petId: event.petId,
       type: event.type,
       content: typeof event.content === 'string' ? event.content.trim() : '',

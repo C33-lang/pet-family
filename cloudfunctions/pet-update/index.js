@@ -1,4 +1,5 @@
 const cloud = require('wx-server-sdk')
+const { getFamilyContext } = require('./family')
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 
@@ -72,9 +73,10 @@ exports.main = async (event) => {
   }
 
   try {
+    const context = await getFamilyContext(db, OPENID)
     const queryResult = await db
       .collection('pets')
-      .where({ _id: event.id, _openid: OPENID })
+      .where({ _id: event.id, familyId: context.familyId })
       .limit(1)
       .get()
 

@@ -337,3 +337,118 @@ page {
   color: #9a938d;
   text-align: center;
 }
+
+/* ---------- 家庭成员 ---------- */
+.family-card {
+  background: #ffffff;
+  border-radius: 28rpx;
+  padding: 32rpx 28rpx;
+  box-shadow: 0 8rpx 24rpx rgba(47, 42, 39, 0.05);
+}
+
+.family-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.family-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #2f2a27;
+}
+
+.family-caption {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #9a938d;
+}
+
+.family-count {
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  background: #fff3e9;
+  font-size: 26rpx;
+  color: #ff8c42;
+}
+
+.invite-box {
+  margin-top: 28rpx;
+  padding: 28rpx 24rpx;
+  background: #fffaf5;
+  border: 2rpx dashed #f2d9c3;
+  border-radius: 20rpx;
+}
+
+.invite-label {
+  font-size: 23rpx;
+  color: #a89a8d;
+}
+
+.invite-code {
+  margin-top: 10rpx;
+  font-size: 46rpx;
+  font-weight: 500;
+  letter-spacing: 10rpx;
+  color: #2f2a27;
+}
+
+.invite-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 22rpx;
+}
+
+.invite-button {
+  min-width: 140rpx;
+  height: 62rpx;
+  line-height: 62rpx;
+  margin: 0;
+  padding: 0 28rpx;
+  border: 2rpx solid #ffd7b8;
+  border-radius: 31rpx;
+  background: #ffffff;
+  font-size: 25rpx;
+  color: #ff8c42;
+  text-align: center;
+}
+
+.invite-button::after {
+  border: none;
+}
+
+.invite-share {
+  margin-left: 20rpx;
+  background: #ff8c42;
+  border-color: #ff8c42;
+  color: #ffffff;
+}
+
+.family-hint {
+  margin-top: 22rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  color: #a9a09a;
+}
+
+.family-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28rpx;
+  padding-top: 24rpx;
+  border-top: 2rpx solid #f2eeea;
+}
+
+.family-link {
+  font-size: 26rpx;
+  color: #6b625c;
+}
+
+.family-link-danger {
+  color: #d4534f;
+}
+
+.family-retry {
+  margin-top: 24rpx;
+}
