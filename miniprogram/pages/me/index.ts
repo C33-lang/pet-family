@@ -158,7 +158,6 @@ Page({
       status: 'loading',
       retrying: true,
     })
-    this.loadUserInfo()
     Promise.all([this.loadPetCount(), this.loadFamily()])
       .then(() => {
         this.setData({
@@ -177,19 +176,6 @@ Page({
           icon: 'none',
         })
       })
-  },
-
-  loadUserInfo() {
-    const app = getApp<IAppOption>()
-    const userInfo = app.globalData?.userInfo
-    if (userInfo) {
-      this.setData({
-        userInfo: {
-          avatarUrl: userInfo.avatarUrl || DEFAULT_AVATAR,
-          nickName: userInfo.nickName || '微信用户',
-        },
-      })
-    }
   },
 
   loadPetCount(): Promise<void> {

@@ -143,19 +143,6 @@ Page({
     })
   },
 
-  async handleAuthorize() {
-    try {
-      const result = await wx.getUserProfile({
-        desc: '用于完善家庭养宠体验',
-      })
-      const app = getApp<IAppOption>()
-      app.globalData.userInfo = result.userInfo
-      await this.loadPets()
-    } catch (error) {
-      wx.showToast({ title: '授权后才能管理宠物', icon: 'none' })
-    }
-  },
-
   handleAdd() {
     wx.navigateTo({ url: '/pages/pets/edit/index' })
   },

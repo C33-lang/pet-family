@@ -63,7 +63,7 @@ Page({
   },
 
   handleDateChange(event: WechatMiniprogram.PickerChange) {
-    const date = event.detail.value
+    const date = event.detail.value as string
     const isToday = date === this.data.maxDate
     const maxTime = isToday ? formatTime(new Date()) : '23:59'
     const time = isToday && this.data.time > maxTime ? maxTime : this.data.time
@@ -71,7 +71,7 @@ Page({
   },
 
   handleTimeChange(event: WechatMiniprogram.PickerChange) {
-    this.setData({ time: event.detail.value })
+    this.setData({ time: event.detail.value as string })
   },
 
   handleContentInput(event: WechatMiniprogram.TextareaInput) {
