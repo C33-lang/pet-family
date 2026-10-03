@@ -62,6 +62,10 @@
         <view class="pet-info">
           <view class="pet-name">{{item.name}}</view>
           <view class="pet-age">{{item.ageText}}</view>
+          <view
+            wx:if="{{item.reminderBadge}}"
+            class="pet-reminder level-{{item.reminderLevel}}"
+          >⏰ {{item.reminderBadge}}</view>
         </view>
         <view class="level-badge">Lv.{{item.level}}</view>
         <view class="card-arrow">›</view>

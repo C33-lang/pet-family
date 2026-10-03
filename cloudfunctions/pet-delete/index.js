@@ -53,10 +53,17 @@ exports.main = async (event) => {
         .where({ familyId: context.familyId, petId })
         .update({ data: orphanData })
 
+      // 提醒与花费同口径：petIds 为数组，标记孤儿时追加而非整体覆盖
       await transaction
         .collection('reminders')
-        .where({ familyId: context.familyId, petId })
-        .update({ data: orphanData })
+        .where({ familyId: context.familyId, petIds: petId })
+        .update({
+          data: {
+            isOrphan: true,
+            orphanPetIds: _.addToSet(petId),
+            orphanedAt,
+          },
+        })
 
       await transaction
         .collection('expenses')

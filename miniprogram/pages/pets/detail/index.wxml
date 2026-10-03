@@ -47,11 +47,7 @@
     <record-list wx:if="{{activeTab === 'records'}}" pet-id="{{id}}"></record-list>
     <photo-grid wx:elif="{{activeTab === 'photos'}}" pet-id="{{id}}"></photo-grid>
     <expense-list wx:elif="{{activeTab === 'expenses'}}" pet-id="{{id}}"></expense-list>
-
-    <view wx:else class="tab-panel">
-      <view class="panel-icon">⏰</view>
-      <view class="panel-title">提醒模块开发中</view>
-    </view>
+    <reminder-list wx:else pet-id="{{id}}"></reminder-list>
 
     <button class="delete-button" loading="{{deleting}}" disabled="{{deleting}}" bindtap="handleDelete">删除宠物</button>
   </block>

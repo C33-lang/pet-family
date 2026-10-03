@@ -88,35 +88,53 @@ pet-family/
 
 ### expenses（花费表）
 
+> 已按实现同步。数据隔离用 `_openid`，**业务查询一律走 `familyId`**。
+
 ```ts
 {
   _id: string
-  _openid: string
-  petIds: string[]       // 关联宠物，支持多宠分摊
-  category: 'food' | 'litter' | 'snack' | 'medical' | 'toy' | 'grooming' | 'other'
-  amount: number         // 金额（元，保留两位小数）
-  note: string           // 备注
-  voucher: string        // 凭证图 fileID
+  _openid: string        // 创建者
+  familyId: string       // 家庭归属
+  petIds: string[]       // 关联宠物，多选时金额按只数均摊
+  amount: number         // 整笔金额（元，两位小数）
+  category: 'food' | 'snack' | 'medical' | 'vaccine' | 'beauty' | 'toy' | 'other'
   expenseTime: number    // 消费时间
+  remark: string         // 备注
+  isOrphan: boolean      // 关联宠物被删除后置位
+  orphanPetIds?: string[]
+  orphanedAt?: number
   createdAt: number
 }
 ```
 
 ### reminders（提醒表）
 
+> 已按实现同步。云函数：reminder-create / reminder-list / reminder-update / reminder-delete。
+
 ```ts
 {
   _id: string
   _openid: string
-  petId: string          // 关联 pets._id
-  title: string          // 事项名，如"体内驱虫"
-  cycleType: 'weekly' | 'monthly' | 'interval' | 'yearly' | 'once'
-  cycleValue: number     // interval 时为天数；其他类型为 1
-  nextTriggerAt: number  // 下次触发时间戳
-  enabled: boolean
+  familyId: string
+  petIds: string[]        // 关联宠物，多选表示共用一个提醒
+  type: 'vaccine' | 'deworm' | 'checkup' | 'bath' | 'med' | 'other'
+  title: string           // 展示名称，留空时回退为分类名
+  cycleDays: number       // 周期天数，0 表示一次性；白名单 0/7/14/30/90/180/365
+  nextDate: number        // 下次到期日（当天 00:00 时间戳，只存日期不存时刻）
+  remindBeforeDays: number// 提前提醒天数，白名单 0/1/3/7
+  enabled: boolean        // 一次性提醒打卡后自动置 false
+  lastDoneAt: number | null
+  doneCount: number
+  remark: string
+  isOrphan: boolean
+  orphanPetIds?: string[]
+  orphanedAt?: number
   createdAt: number
 }
 ```
+
+> 其他集合（pets / records / photos / users）以 `typings/*.d.ts` 与已实现模块为准。
+> 若发现本节与代码不一致，**以代码为准**并顺手回填本节。
 
 ### users（用户表）
 
@@ -154,6 +172,13 @@ pet-family/
 
 > 每次发现 AI 重复犯同一个错误，就把规则写在这里。
 
-- [ ] 云函数**不能创建集合**，集合必须在云开发控制台手动创建
+- [ ] **云函数目录必须含 `package.json`**（`dependencies: { "wx-server-sdk": "latest" }`）。漏了它云端装不上依赖，前端报 `-504002 Cannot find module 'wx-server-sdk'`——报这个错先 `ls` 查目录完整性，别急着怀疑部署方式
+- [ ] **云函数之间不能共享代码**。`family.js` 在每个云函数目录各存一份副本，改动后必须全量分发，并用 `md5sum cloudfunctions/*/family.js | awk '{print $1}' | sort -u | wc -l` 校验结果为 1
+- [ ] 业务集合（pets / records / photos / expenses / reminders）需在云开发控制台**手动创建**；`families` / `family_members` 由 `family.js` 自动创建并自愈
+- [ ] **业务查询一律用 `familyId`，前端绝不传 familyId**（否则等于开放越权）。云函数内用 `getFamilyContext(db, OPENID)` 反查
 - [ ] 集合权限必须设置为「仅创建者可读写」，禁止"所有人可读"
+- [ ] 云函数 JS 注释里不能出现 `cloudfunctions/*/` 这类写法——其中的 `*/` 会提前结束块注释，导致 `node --check` 语法错误
+- [ ] 用 PowerShell 写文件会带入 UTF-8 BOM，导致 wxss 编译报错。排查：`head -c 3 file | od -An -tx1`，出现 `ef bb bf` 用 `sed -i '1s/^\xEF\xBB\xBF//' file` 清除
+- [ ] 可选链等新语法依赖「增强编译」：`project.config.json` 的 `enhance` / `es6` 必须为 true
+- [ ] 云函数改动后必须在开发者工具右键「上传并部署：云端安装依赖」，否则前端报 `FUNCTION_NOT_FOUND`
 - [ ] 月份边界计算需特殊处理（如 1 月 31 日的月周期）

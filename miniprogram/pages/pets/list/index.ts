@@ -1,10 +1,14 @@
 import { getPetList } from '../../../services/pet'
 import { calculatePetAge } from '../../../utils/date'
+import { buildReminderBadge, getBadgeLevel } from '../../../utils/reminder'
 import { getThemeColor, syncThemeChrome } from '../../../utils/theme'
 
 type PetListItem = Pet & {
   ageText: string
   level: number
+  /** 提醒角标文案，无提醒时为空串 */
+  reminderBadge: string
+  reminderLevel: string
 }
 
 /** 宠物数量达到该值时显示搜索框，少量宠物不打扰 */
@@ -86,6 +90,8 @@ Page({
         ageText: calculatePetAge(pet.birthday),
         // 等级系统后续接入，本期仅展示占位等级。
         level: 1,
+        reminderBadge: buildReminderBadge(pet.reminderBrief),
+        reminderLevel: getBadgeLevel(pet.reminderBrief),
       }))
 
       writeCache(list)

@@ -1,0 +1,119 @@
+<view class="reminder-panel">
+  <view wx:if="{{status === 'loading'}}" class="skeleton-wrap">
+    <view class="skeleton-summary"></view>
+    <view class="skeleton-row" wx:for="{{[1, 2, 3]}}" wx:key="*this"></view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="reload">重新加载</button>
+  </view>
+
+  <view wx:elif="{{status === 'empty'}}" class="state-box">
+    <view class="state-icon">⏰</view>
+    <view class="state-text">还没有提醒，点右下角 + 添加疫苗、驱虫等周期提醒</view>
+  </view>
+
+  <scroll-view
+    wx:else
+    class="reminder-scroll"
+    scroll-y
+    lower-threshold="100"
+    bindscrolltolower="handleLoadMore"
+  >
+    <view class="summary-card">
+      <view class="summary-label">待办提醒</view>
+      <view class="summary-count">{{stats.pendingCount}}</view>
+      <view class="summary-sub">
+        逾期 {{stats.overdueCount}} 项 · 今天 {{stats.todayCount}} 项 · 未来 7 天 {{stats.weekCount}} 项
+      </view>
+    </view>
+
+    <view
+      class="reminder-item"
+      wx:for="{{reminders}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="handleView"
+      bindlongpress="handleDelete"
+    >
+      <view class="reminder-icon">{{item.icon}}</view>
+      <view class="reminder-main">
+        <view class="reminder-head">
+          <text class="reminder-name">{{item.title}}</text>
+          <text class="reminder-status level-{{item.level}}">{{item.statusText}}</text>
+        </view>
+        <view class="reminder-meta">
+          <text>{{item.dateText}}</text>
+          <text class="reminder-cycle">{{item.cycleText}}</text>
+        </view>
+      </view>
+      <view wx:if="{{deletingId === item._id}}" class="deleting-mask">删除中</view>
+    </view>
+
+    <view class="load-more" wx:if="{{loadingMore}}">加载中...</view>
+    <view
+      class="load-more retry-more"
+      wx:elif="{{loadMoreError}}"
+      bindtap="handleRetryMore"
+    >加载失败，点击重试</view>
+    <view class="load-more" wx:elif="{{!hasMore && reminders.length}}">没有更多了</view>
+  </scroll-view>
+
+  <button class="add-button" bindtap="handleAdd">+</button>
+
+  <view wx:if="{{sheetItem}}" class="sheet-mask" bindtap="handleCloseSheet"></view>
+  <view wx:if="{{sheetItem}}" class="sheet">
+    <view class="sheet-head">
+      <text class="sheet-icon">{{sheetItem.icon}}</text>
+      <text class="sheet-title">{{sheetItem.title}}</text>
+      <text class="sheet-badge level-{{sheetItem.level}}">{{sheetItem.statusText}}</text>
+    </view>
+
+    <view class="sheet-row">
+      <text class="sheet-label">分类</text>
+      <text class="sheet-value">{{sheetItem.typeLabel}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">下次日期</text>
+      <text class="sheet-value">{{sheetItem.dateText}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">提醒周期</text>
+      <text class="sheet-value">{{sheetItem.cycleText}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">提醒时机</text>
+      <text class="sheet-value">{{sheetItem.advanceText}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">上次完成</text>
+      <text class="sheet-value">{{sheetItem.lastDoneText}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">累计完成</text>
+      <text class="sheet-value">{{sheetItem.doneCount}} 次</text>
+    </view>
+    <view wx:if="{{sheetItem.petText}}" class="sheet-row">
+      <text class="sheet-label">关联宠物</text>
+      <text class="sheet-value">{{sheetItem.petText}}</text>
+    </view>
+    <view class="sheet-row">
+      <text class="sheet-label">备注</text>
+      <text class="sheet-value">{{sheetItem.remarkText}}</text>
+    </view>
+
+    <view class="sheet-hint">长按列表项可删除</view>
+
+    <view class="sheet-actions">
+      <button class="sheet-secondary" bindtap="handleCloseSheet">关闭</button>
+      <button
+        class="sheet-primary"
+        loading="{{completing}}"
+        disabled="{{completing}}"
+        bindtap="handleComplete"
+      >完成打卡</button>
+    </view>
+  </view>
+</view>

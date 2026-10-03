@@ -63,6 +63,32 @@ page {
   font-size: 26rpx;
 }
 
+/* ---------- 提醒角标：逾期红 / 今天橙 / 7 天内浅橙 / 其余灰 ---------- */
+.pet-reminder {
+  overflow: hidden;
+  max-width: 400rpx;
+  margin-top: 10rpx;
+  font-size: 23rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pet-reminder.level-overdue {
+  color: #e64340;
+}
+
+.pet-reminder.level-today {
+  color: #ff8c42;
+}
+
+.pet-reminder.level-soon {
+  color: #d98b3f;
+}
+
+.pet-reminder.level-normal {
+  color: #a9a09a;
+}
+
 .level-badge {
   position: absolute;
   top: 18rpx;

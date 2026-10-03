@@ -9,6 +9,8 @@ interface Pet {
   sterilized: boolean
   createdAt: number
   updatedAt?: number
+  /** 由 pet-list 云函数附带返回的最紧急提醒，用于列表角标 */
+  reminderBrief?: PetReminderBrief | null
 }
 
 interface PetFormData {
