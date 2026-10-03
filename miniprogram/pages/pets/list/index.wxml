@@ -67,7 +67,6 @@
             class="pet-reminder level-{{item.reminderLevel}}"
           >⏰ {{item.reminderBadge}}</view>
         </view>
-        <view class="level-badge">Lv.{{item.level}}</view>
         <view class="card-arrow">›</view>
       </view>
     </view>

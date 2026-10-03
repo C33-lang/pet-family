@@ -64,20 +64,6 @@
       </block>
     </view>
 
-    <view class="section-title">成长等级</view>
-    <view class="level-card">
-      <view class="level-header">
-        <view>
-          <view class="level-title">Lv.{{level}}</view>
-          <view class="level-caption">持续记录，解锁更多成长成就</view>
-        </view>
-        <view class="exp-text">{{exp}} / {{nextLevelExp}} EXP</view>
-      </view>
-      <view class="progress-track">
-        <view class="progress-value" style="width: {{progressPercent}}%;"></view>
-      </view>
-    </view>
-
     <view class="section-title">背景颜色</view>
     <view class="theme-card">
       <block wx:for="{{themeGroups}}" wx:key="name" wx:for-item="group">

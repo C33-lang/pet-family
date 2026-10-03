@@ -23,7 +23,6 @@
       <view class="profile-info">
         <view class="name-row">
           <text class="pet-name">{{pet.name}}</text>
-          <text class="level-badge">Lv.1</text>
         </view>
         <view class="pet-breed">{{pet.breed || '品种未填写'}}</view>
         <view class="meta-row">
