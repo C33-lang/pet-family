@@ -143,11 +143,13 @@ async function createFamily(db, openid) {
  * 取当前用户的家庭上下文；没有家庭则自动创建并把历史数据迁入。
  */
 async function getFamilyContext(db, openid) {
-  await ensureCollections(db)
   const membership = await readMembership(db, openid)
   if (membership && membership.familyId) {
     return { familyId: membership.familyId, role: membership.role || 'member' }
   }
+  // 只有确实需要建家庭时才检查/创建集合：避免在每次云函数调用的热路径上
+  // 多打两次必然失败的 createCollection 请求（实测显著拖慢首次打开）。
+  await ensureCollections(db)
   return createFamily(db, openid)
 }
 

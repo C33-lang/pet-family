@@ -45,7 +45,12 @@ Page({
   },
 
   async loadDetail() {
-    this.setData({ status: 'loading', errorMessage: '' })
+    // 已有内容时静默刷新，不闪加载态
+    const silent = this.data.status === 'ready' && !!this.data.pet
+    if (!silent) {
+      this.setData({ status: 'loading', errorMessage: '' })
+    }
+
     try {
       const pet = await getPetDetail(this.data.id)
       this.setData({
@@ -58,6 +63,10 @@ Page({
       })
       wx.setNavigationBarTitle({ title: pet.name })
     } catch (error) {
+      if (silent) {
+        return
+      }
+
       this.setData({
         status: 'error',
         errorMessage: (error as Error).message || '加载失败，请重试',

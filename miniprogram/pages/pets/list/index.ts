@@ -9,6 +9,28 @@ type PetListItem = Pet & {
 
 /** 宠物数量达到该值时显示搜索框，少量宠物不打扰 */
 const SEARCH_THRESHOLD = 6
+/** 本地列表缓存：冷启动时先渲染上次的数据，避免白屏等待 */
+const CACHE_KEY = 'pet_list_cache'
+
+function readCache(): PetListItem[] {
+  try {
+    const cached = wx.getStorageSync(CACHE_KEY)
+    return Array.isArray(cached) ? (cached as PetListItem[]) : []
+  } catch (error) {
+    return []
+  }
+}
+
+function writeCache(list: PetListItem[]) {
+  if (!list.length) {
+    return
+  }
+  try {
+    wx.setStorageSync(CACHE_KEY, list)
+  } catch (error) {
+    // 缓存写入失败不影响主流程
+  }
+}
 
 Page({
   data: {
@@ -32,8 +54,30 @@ Page({
     syncThemeChrome(themeBg, true)
   },
 
+  applyList(list: PetListItem[]) {
+    this.setData({
+      pets: list,
+      filteredPets: this.filterPets(list, this.data.keyword),
+      showSearch: list.length >= SEARCH_THRESHOLD,
+      status: list.length ? 'ready' : 'empty',
+      errorMessage: '',
+    })
+  },
+
   async loadPets() {
-    this.setData({ status: 'loading', errorMessage: '' })
+    // 1. 本地无数据时先用缓存秒开，把等待时间藏起来
+    if (!this.data.pets.length) {
+      const cached = readCache()
+      if (cached.length) {
+        this.applyList(cached)
+      }
+    }
+
+    // 2. 已有内容（缓存或上次结果）时静默刷新：不闪加载态、失败不报错
+    const silent = this.data.pets.length > 0 || this.data.status === 'empty'
+    if (!silent) {
+      this.setData({ status: 'loading', errorMessage: '' })
+    }
 
     try {
       const pets = await getPetList()
@@ -44,14 +88,16 @@ Page({
         level: 1,
       }))
 
-      this.setData({
-        pets: list,
-        filteredPets: this.filterPets(list, this.data.keyword),
-        showSearch: list.length >= SEARCH_THRESHOLD,
-        status: list.length ? 'ready' : 'empty',
-      })
+      writeCache(list)
+      this.applyList(list)
     } catch (error) {
       const requestError = error as Error & { code?: number }
+
+      if (silent) {
+        // 静默刷新失败：保留已有内容，不打扰用户
+        return
+      }
+
       if (requestError.code === 40101) {
         this.setData({ status: 'unauthorized' })
         return
