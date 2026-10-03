@@ -4,6 +4,7 @@
     "pages/pets/detail/index",
     "pages/pets/edit/index",
     "pages/records/add/index",
+    "pages/expenses/add/index",
     "pages/family/join/index",
     "pages/me/index"
   ],

@@ -2,6 +2,7 @@
   "navigationBarTitleText": "宠物详情",
   "usingComponents": {
     "record-list": "/components/record-list/index",
-    "photo-grid": "/components/photo-grid/index"
+    "photo-grid": "/components/photo-grid/index",
+    "expense-list": "/components/expense-list/index"
   }
 }

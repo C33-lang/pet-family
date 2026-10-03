@@ -1,0 +1,86 @@
+<view class="page" style="background-color: {{themeBg}};">
+  <view class="form-card">
+    <view class="section-title">金额 <text class="required">*</text></view>
+    <view class="amount-row">
+      <text class="amount-symbol">¥</text>
+      <input
+        class="amount-input"
+        type="digit"
+        value="{{amount}}"
+        placeholder="0.00"
+        maxlength="10"
+        bindinput="handleAmountInput"
+      />
+    </view>
+    <view class="field-hint">支持两位小数，例如 128.50</view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-title">花费分类 <text class="required">*</text></view>
+    <view class="type-grid">
+      <view
+        class="type-item {{selectedCategory === item.value ? 'selected' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="value"
+        data-category="{{item.value}}"
+        bindtap="handleCategorySelect"
+      >
+        <view class="type-icon">{{item.icon}}</view>
+        <view class="type-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="field-row">
+      <text class="field-label">消费日期</text>
+      <picker mode="date" value="{{date}}" end="{{maxDate}}" bindchange="handleDateChange">
+        <view class="picker-value">{{date}} <text class="arrow">›</text></view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-title">关联宠物 <text class="required">*</text></view>
+    <view class="pet-chips">
+      <view
+        class="pet-chip {{selectedMap[item._id] ? 'selected' : ''}}"
+        wx:for="{{pets}}"
+        wx:key="_id"
+        data-id="{{item._id}}"
+        bindtap="handlePetToggle"
+      >
+        <image
+          wx:if="{{item.avatar}}"
+          class="chip-avatar"
+          src="{{item.avatar}}"
+          mode="aspectFill"
+        ></image>
+        <view wx:else class="chip-avatar chip-avatar-placeholder">🐾</view>
+        <text class="chip-name">{{item.name}}</text>
+      </view>
+    </view>
+    <view wx:if="{{shareText}}" class="field-hint">{{shareText}}</view>
+    <view wx:elif="{{loadingPets}}" class="field-hint">正在加载宠物…</view>
+    <view wx:else class="field-hint">多选表示这笔花费由多只宠物共同产生</view>
+  </view>
+
+  <view class="form-card">
+    <view class="section-title">备注</view>
+    <textarea
+      class="content-input"
+      value="{{remark}}"
+      placeholder="例如：皇家猫粮 2kg（选填）"
+      maxlength="200"
+      bindinput="handleRemarkInput"
+    ></textarea>
+    <view class="count-text">{{remark.length}}/200</view>
+  </view>
+
+  <button
+    class="submit-button"
+    disabled="{{!canSubmit || submitting}}"
+    loading="{{submitting}}"
+    bindtap="handleSubmit"
+  >保存花费</button>
+</view>

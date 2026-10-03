@@ -1,0 +1,75 @@
+<view class="expense-panel">
+  <view wx:if="{{status === 'loading'}}" class="skeleton-wrap">
+    <view class="skeleton-summary"></view>
+    <view class="skeleton-row" wx:for="{{[1, 2, 3, 4]}}" wx:key="*this"></view>
+  </view>
+
+  <view wx:elif="{{status === 'error'}}" class="state-box">
+    <view class="state-icon">☁️</view>
+    <view class="state-text">{{errorMessage}}</view>
+    <button class="retry-button" bindtap="reload">重新加载</button>
+  </view>
+
+  <view wx:elif="{{status === 'empty'}}" class="state-box">
+    <view class="state-icon">🧾</view>
+    <view class="state-text">还没有花费记录，点右下角 + 记一笔</view>
+  </view>
+
+  <scroll-view
+    wx:else
+    class="expense-scroll"
+    scroll-y
+    lower-threshold="100"
+    bindscrolltolower="handleLoadMore"
+  >
+    <view class="summary-card">
+      <view class="summary-label">本月花费</view>
+      <view class="summary-amount">¥{{stats.monthTotalText}}</view>
+      <view class="summary-sub">本月 {{stats.monthCount}} 笔 · 累计 ¥{{stats.totalText}}</view>
+
+      <view class="category-bars" wx:if="{{stats.byCategory.length}}">
+        <view class="category-row" wx:for="{{stats.byCategory}}" wx:key="category">
+          <text class="category-icon">{{item.icon}}</text>
+          <text class="category-name">{{item.label}}</text>
+          <view class="category-track">
+            <view class="category-fill" style="width: {{item.percent}}%;"></view>
+          </view>
+          <text class="category-amount">¥{{item.amountText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view
+      class="expense-item"
+      wx:for="{{expenses}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="handleView"
+      bindlongpress="handleDelete"
+    >
+      <view class="expense-icon">{{item.icon}}</view>
+      <view class="expense-main">
+        <view class="expense-head">
+          <text class="expense-name">{{item.categoryLabel}}</text>
+          <text class="expense-amount">¥{{item.amountText}}</text>
+        </view>
+        <view class="expense-remark">{{item.remarkText}}</view>
+        <view class="expense-meta">
+          <text>{{item.dateText}}</text>
+          <text wx:if="{{item.sharedText}}" class="expense-shared">{{item.sharedText}}</text>
+        </view>
+      </view>
+      <view wx:if="{{deletingId === item._id}}" class="deleting-mask">删除中</view>
+    </view>
+
+    <view class="load-more" wx:if="{{loadingMore}}">加载中...</view>
+    <view
+      class="load-more retry-more"
+      wx:elif="{{loadMoreError}}"
+      bindtap="handleRetryMore"
+    >加载失败，点击重试</view>
+    <view class="load-more" wx:elif="{{!hasMore && expenses.length}}">没有更多了</view>
+  </scroll-view>
+
+  <button class="add-button" bindtap="handleAdd">+</button>
+</view>
